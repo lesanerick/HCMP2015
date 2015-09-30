@@ -152,8 +152,10 @@ border: 1px solid #FFF !important;
                 }else{
                   if($s11=='internal issue'){
                     $running_bal_cl = $running_bal_op - $qty_issued;        
-                  }else{
+                  }elseif ($s11=='(+ve Adj) Stock Addition'){
                     $running_bal_cl = $running_bal_op + $qty_issued;        
+                  }elseif ($s11=='(-ve Adj) Stock Deduction'){
+                    $running_bal_cl = $running_bal_op - $qty_issued;        
                   }
                             
                 }                             
