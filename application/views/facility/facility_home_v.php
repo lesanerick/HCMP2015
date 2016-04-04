@@ -79,16 +79,16 @@
 			</p> 
         </div>
         <?php endif; // items_stocked_out_in_facility?>
-        <?php //if($facility_dashboard_notifications['facility_redistribution_mismatches']> 0): ?>
-       <!--  <div style="height:auto; margin-bottom:2px;" class="warn message">
+        <?php if($facility_dashboard_notifications['facility_redistribution_mismatches']> 0): ?>
+       <div style="height:auto; margin-bottom:2px;" class="warn message">
           <h5>Redistribution Mismatches</h5>
           <p>
-            <a class="link" href="<?php// echo base_url('reports/redistribution_mismatches') ?>">
-              <span class="badge"><?php //echo $facility_dashboard_notifications['facility_redistribution_mismatches']; ?></span> Redistribution mismatches found
-            </a>//
+            <a class="link" href="<?php echo base_url('reports/redistribution_mismatches') ?>">
+              <span class="badge"><?php echo $facility_dashboard_notifications['facility_redistribution_mismatches']; ?></span> Redistribution mismatches found
+            </a>
           </p>
-        </div> -->
-      <?php //endif; //Redistribution Mismatches?>
+        </div>
+      <?php endif; //Redistribution Mismatches?>
         <?php if(array_key_exists('pending_all', $facility_dashboard_notifications['facility_order_count']) 
         && @$facility_dashboard_notifications['facility_order_count']['pending_all']>0): ?>
       	<div style="height:auto; margin-bottom: 2px" class="warn message ">      	

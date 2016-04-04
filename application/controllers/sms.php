@@ -24,7 +24,6 @@ class sms extends MY_Controller {
 	 	$phones = '254707463571';
 	 	$message = 'test from system live server';
 	 	$message = urlencode($message);
-
 	 	$spam_sms = '254707463571';
 
 	 	$phone_numbers = explode("+", $spam_sms);
@@ -417,7 +416,11 @@ class sms extends MY_Controller {
 	 */
 
 	 //sends a text when a stock update is done by a facility
+<<<<<<< HEAD
+	/* public function send_stock_update_sms() {
+=======
 	 public function send_stock_update_sms_nullified() {
+>>>>>>> ttunduny/develop
 	 	$facility_name = $this -> session -> userdata('full_name');
 	 	$facility_code = $this -> session -> userdata('facility_id'); ;
 	 	$data = Users::getUsers($facility_code) -> toArray();
@@ -434,10 +437,9 @@ class sms extends MY_Controller {
 	 	foreach ($phone_numbers as $key => $user_no) {
 	 		file("http://41.57.109.242:13000/cgi-bin/sendsms?username=clinton&password=ch41sms&to=$user_no&text=$message");
 	 	}
-
+*/
 	 //$this -> send_sms(substr($phone, 0, -1), $message);
 
-	 }
 
 	 //Test for sending emails
 	 public function send_email_test() {

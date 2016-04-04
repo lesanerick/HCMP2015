@@ -107,7 +107,6 @@ class User extends MY_Controller {
 				$menus[$counter] = array("menu_text" => $menu_item -> menu_text, "menu_url" => $menu_item -> menu_url, "menu_id" => $menu_item -> id, "parent_status" => $menu_item -> parent_status);
 				$counter++;
 				$menuids[] = $menu_item -> id;
-
 			}
 			
 			$sub_menus = array();

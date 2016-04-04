@@ -106,7 +106,7 @@
 								<th>Work Address</th>
 								<th>Patient Number</th>
 								<th>Date Added</th>	
-								<th>Action</th>							
+								<!-- <th>Action</th> -->							
 							</tr>
 						</thead>
 
@@ -141,7 +141,7 @@
 								<td><?php echo $work_address;?></td>
 								<td><?php echo $patient_number;?></td>
 								<td><?php echo $date_created_f;?></td>
-								<td><a class="btn btn-danger" href="<?php echo base_url().'dispensing/delete_patient/'.$patient_id; ?>">Delete</a></td>
+								<!-- <td><a class="btn btn-danger" href="<?php echo base_url().'dispensing/delete_patient/'.$patient_id; ?>">Delete</a></td> -->
 							</tr>
 							<?php } ?>
 						</tbody>

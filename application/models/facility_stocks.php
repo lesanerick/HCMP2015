@@ -1735,7 +1735,10 @@ class Facility_stocks extends Doctrine_Record {
 		$posterior = isset($facility_code)? "AND sp.facility_code = $facility_code " :NULL;
 		$posterior .= isset($service_point) ? "AND sp.service_point_id = $service_point " : NULL;
 		$posterior .= isset($potential_expiries) ? "AND sp.expiry_date BETWEEN CURDATE()AND DATE_ADD(CURDATE(), INTERVAL 6 MONTH) " : NULL;
-		$posterior .= isset($expiries) ? "AND sp.expiry_date < NOW()" : NULL;
+		//added a column status for expiries
+		//if status = 0 the goods have not been decommisioned
+		//if status = 1 the goods have be decommisioned
+		$posterior .= isset($expiries) ? "AND sp.expiry_date < NOW() AND sp.status = 0" : NULL;
 		
 		$query = Doctrine_Manager::getInstance()->getCurrentConnection()->fetchAll("
 			SELECT 
@@ -1758,11 +1761,6 @@ class Facility_stocks extends Doctrine_Record {
 			WHERE
 			    s.id = sp.service_point_id AND c.id = sp.commodity_id $posterior
     	");
-
 		return $query;
-	}
-
-	public static function service_point_expiries(){
-
 	}
 }

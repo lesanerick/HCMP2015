@@ -98,56 +98,37 @@ font-size: 12px !important;
 				</button>
 </div>
 </div>
-
-<!-- Modal add user -->
-<div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" id="myform">
-	<div class="modal-dialog editable" >
-		<div class="modal-content">
-			<div class="modal-header" style="">
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
-					&times;
-				</button>
-				<h4 class="modal-title" id="myModalLabel" style="text-align: center;line-height: 1">Confirm?</h4>
-			</div>
-			<div class="row" style="margin:auto" id="error_msg">
-				<div class=" col-md-12">
-					<div class="form-group">
-					</div>
-				</div>
-
-			</div>
-			<div class="modal-body" style="padding:0">
-				<div class="row" style="margin:auto">
-					<div class="col-md-12 ">
-					<center>
-					<h5>Are you sure you want to proceed?</h5>
-					</center>	
-					</div>
-				</div>
-			</div>
-			<div class="modal-footer">
-				<button class="btn btn-default borderless" data-dismiss="modal">
-					No
-				</button>
-				
-				<button class="btn btn-primary borderless" id="confirm_create_patients">
-					Yes
-				</button>
-			</div>
-		</div>
-	</div>
-</div><!-- end Modal new user -->
-
 </form>
 <?php //echo form_close();?>
+<div class="modal fade modal-body" style="padding:0;" tabindex="1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-footer">
+		<button class="btn btn-default borderless" data-dismiss="modal">Close</button>
+		<button class="btn btn-primary borderless" id="">Save changes</button>
+	</div>
+</div>
 <script>
 $(document).ready(function() {	
 	$("#create_new").click(function(){
-		$('#addModal').modal('show');		
-		// $("#myform").submit();
-	});
-	$("#confirm_create_patients").click(function(){
-		// $('#addModal').modal('show');		
+		var loading_icon="<?php echo base_url().'assets/img/Preloader_4.gif' ?>";
+    	var message = confirm("Are you sure you want to proceed?");
+        if (message){
+            /*$('.modal-body').html("<img style='margin:30% 0 20% 42%;' src="+loading_icon+">");
+            setTimeout(function () {
+	      	$('.modal-body').html("<div class='bg-warning' style='height:30px'>"+
+							"<button type='button' class='close' data-dismiss='alert' aria-hidden='true'>×</button>"+
+							"<h3>Success!!! A new patient was added to the system. Please Close to continue</h3></div>")
+							
+			$('.modal-footer').html("<button type='button' class='btn btn-default' data-dismiss='modal'>Close</button>")
+				location.reload();
+	    	}, 4000); */
+			setTimeout(function(){
+				//notification = '<ol>' + '<li>Patient Added</li>' + '</ol>';
+				//hcmp_message_box(title="Success!",notification, message_type="success");
+			}, 3000);
+	    	// $("#myform").submit(); 
+        } else {
+            return false;
+        }   
 		$("#myform").submit();
 	});
 	
@@ -183,6 +164,7 @@ $(document).ready(function() {
  	$("#myform").validate();
 
  	$('.save').button().click(function() {
+ 		console.log("Save Button Function Invoked");
 		var selector_object=$('#add_multiple_patients_table tr:last');
         var form_data=check_if_the_form_has_been_filled_correctly(selector_object);
         if(isNaN(form_data[0])){
@@ -190,8 +172,11 @@ $(document).ready(function() {
            	hcmp_message_box(title='HCMP error message',notification,message_type='error');       
         	return;
         }
+        else{ 
+        }
         confirm_if_the_user_wants_to_save_the_form("#myform");
      });
+
 	function clone_the_last_row_of_the_table(){
         var last_row = $('#add_multiple_patients_table tr:last');
         var cloned_object = last_row.clone(true);

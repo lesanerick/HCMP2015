@@ -185,12 +185,22 @@ class redistribution_data extends Doctrine_Record {
         return $count;
     }
 
-    public static function get_redistribution_mismatches($facility_code){
+    public static function get_redistribution_mismatches_source($facility_code){
         $mismatch_data = Doctrine_Manager::getInstance()->getCurrentConnection()->fetchAll("
             SELECT * 
             FROM redistribution_data rd
             WHERE (rd.quantity_received < rd.quantity_sent OR rd.quantity_received > rd.quantity_sent)
             AND rd.source_facility_code = '$facility_code';
+        ");
+        return $mismatch_data;
+    }
+
+    public static function get_redistribution_mismatches_receive($facility_code){
+        $mismatch_data = Doctrine_Manager::getInstance()->getCurrentConnection()->fetchAll("
+            SELECT * 
+            FROM redistribution_data rd
+            WHERE (rd.quantity_received < rd.quantity_sent OR rd.quantity_received > rd.quantity_sent)
+            AND rd.receive_facility_code = '$facility_code';
         ");
         return $mismatch_data;
     }

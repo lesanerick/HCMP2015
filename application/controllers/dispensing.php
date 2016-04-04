@@ -99,6 +99,17 @@ class Dispensing extends MY_Controller {
 		$data['commodities'] = commodities::set_facility_service_data($facility_code,2);
 		$this -> load -> view("shared_files/template/template", $data);
 	}
+
+	public function setup_physical_count(){
+		$facility_code = $this -> session -> userdata('facility_id');
+		$data['title'] = "Dispensing - Set up Physical Stock Count";
+		$data['content_view'] = "facility/facility_dispensing/setup_physical_count_v";
+		$data['banner_text'] = "Set Up Physical Stock Count";
+		$data['commodities'] = facility_stocks::get_service_point_stocks($facility_code,2,NULL,NULL);
+		//var_dump($data);
+		$this -> load -> view("shared_files/template/template", $data);
+	}
+
 	public function issue(){
 		$facility_code = $this -> session -> userdata('facility_id');
 		$service_point = 2;//hard coded for pharmacy,until requested for :]
@@ -602,7 +613,6 @@ class Dispensing extends MY_Controller {
 		redirect('dispensing');
 		
 	}
-
 
 	}//end of dispense class
 ?>

@@ -23,9 +23,7 @@ class User extends Doctrine_Record {
 		$this -> hasMany('Facilities as Codes', array('local' => 'facility', 'foreign' => 'facility_code'));
 		$this -> hasMany('access_level as u_type', array('local' => 'usertype_id', 'foreign' => 'id'));
 		$this -> hasMany('facilities as hosi', array('local' => 'facility', 'foreign' => 'facility_code'));
-		$this -> hasOne('Facility_Issues as idid', array('local' => 'id', 'foreign' => 'issued_by'));
-		
-		
+		$this -> hasOne('Facility_Issues as idid', array('local' => 'id', 'foreign' => 'issued_by'));		
 	}
 
 	protected function _encrypt_password($value) {
