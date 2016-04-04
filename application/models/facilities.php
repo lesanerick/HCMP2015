@@ -305,7 +305,7 @@ class Facilities extends Doctrine_Record {
 	}
 
 	public static function get_facilities_users_data($facility_code){
-		$q = Doctrine_Manager::getInstance()->getCurrentConnection()->fetchAll("SELECT distinct user.fname,user.lname,user.created_at from user where user.facility = '$facility_code' and user.status = 1 group by user.id order by user.fname ASC"); 
+		$q = Doctrine_Manager::getInstance()->getCurrentConnection()->fetchAll("SELECT distinct user.id, user.fname,user.lname,user.created_at from user where user.facility = '$facility_code' and user.status = 1 group by user.id order by user.fname ASC"); 
 		return $q;  
 	}
 
@@ -528,7 +528,8 @@ class Facilities extends Doctrine_Record {
 		}
 		if ($district_id!=null) {
 			$and_data.= " and d.id = $district_id ";
-		}		
+		}
+		$current_date = date('Y-m-d');		
 		$data = Doctrine_Manager::getInstance()->getCurrentConnection()->fetchAll("SELECT DISTINCT
 				    f.facility_code,c.county, d.district, f.facility_name
 				FROM
@@ -542,7 +543,7 @@ class Facilities extends Doctrine_Record {
 						AND d.id = f.district
 				        AND c.id = d.county
 				        $and_data
-				        AND f.date_of_activation < '$start_date'
+				        AND f.date_of_activation < date_sub('$current_date', INTERVAL 10 DAY)
 				        AND l.end_time_of_event BETWEEN '$start_date' AND '$last_date'
 				        AND l.action = 'Logged Out'
 				group by l.facility_code");
@@ -558,7 +559,7 @@ class Facilities extends Doctrine_Record {
 		if ($district_id!=null) {
 			$and_data.= " and d.id = $district_id ";
 		}
-		
+		$current_date = date('Y-m-d');
 		$data = Doctrine_Manager::getInstance()->getCurrentConnection()->fetchAll("SELECT DISTINCT
 			    f.facility_code,c.county, d.district, f.facility_name, count(l.end_time_of_event) as days
 			FROM
@@ -572,7 +573,7 @@ class Facilities extends Doctrine_Record {
 					AND d.id = f.district
 			        AND c.id = d.county
 			        $and_data
-			        AND f.date_of_activation < '$start_date'
+			        AND f.date_of_activation < date_sub('$current_date', INTERVAL 10 DAY)
 			        AND l.end_time_of_event BETWEEN '$start_date' AND '$last_date'
 			        AND l.action = 'Logged Out'
 			group by f.facility_code,l.user_id,DAY(l.end_time_of_event) HAVING count(l.end_time_of_event) >='$number'");
@@ -587,6 +588,7 @@ class Facilities extends Doctrine_Record {
 		if ($district_id!=null) {
 			$and_data.= " and d.id = $district_id ";
 		}
+		$current_date = date('Y-m-d');
 		
 		$data = Doctrine_Manager::getInstance()->getCurrentConnection()->fetchAll("SELECT DISTINCT
 				    f.facility_code,c.county, d.district, f.facility_name
@@ -601,7 +603,7 @@ class Facilities extends Doctrine_Record {
 						AND d.id = f.district
 				        AND c.id = d.county
 				        $and_data
-				        AND f.date_of_activation < '$start_date'
+				        AND f.date_of_activation < date_sub('$current_date', INTERVAL 10 DAY)
 				        AND l.end_time_of_event BETWEEN '$start_date' AND '$last_date'
 				        AND l.action = 'Logged Out'
 				        AND l.issued = '1'
@@ -618,6 +620,7 @@ class Facilities extends Doctrine_Record {
 		if ($district_id!=null) {
 			$and_data.= " and d.id = $district_id ";
 		}
+		$current_date = date('Y-m-d');
 		$data = Doctrine_Manager::getInstance()->getCurrentConnection()->fetchAll("SELECT DISTINCT
 			    f.facility_code,c.county, d.district, f.facility_name, count(l.end_time_of_event) as days
 				FROM
@@ -631,7 +634,7 @@ class Facilities extends Doctrine_Record {
 						AND d.id = f.district
 				        AND c.id = d.county
 				        $and_data
-				        AND f.date_of_activation < '$start_date'
+				        AND f.date_of_activation < date_sub('$current_date', INTERVAL 10 DAY)
 				        AND l.end_time_of_event BETWEEN '$start_date' AND '$last_date'
 				        AND l.action = 'Logged Out'
 				        AND l.issued = '1'
@@ -672,19 +675,20 @@ class Facilities extends Doctrine_Record {
 			$and_data.= " and d.id = $district_id ";
 		}
 		$data = Doctrine_Manager::getInstance()->getCurrentConnection()->fetchAll("SELECT DISTINCT
-				    f.facility_code,c.county, d.district, f.facility_name
-				FROM
-				    facilities f,
-				    districts d,
-				    counties c
-				WHERE f.using_hcmp = '1'
-						AND d.id = f.district
-				        AND c.id = d.county
-				        $and_data
-						AND f.facility_code not in (SELECT DISTINCT
-				    l.facility_code from  facility_user_log l
-				WHERE l.end_time_of_event BETWEEN '$start_date' AND '$last_date' and l.issued='1'
-				        AND l.action = 'Logged Out')");
+    f.facility_code, c.county, d.district, f.facility_name
+FROM
+    facilities f,
+    districts d,
+    counties c,
+    facility_user_log l
+WHERE
+		f.using_hcmp = '1' 
+		AND d.id = f.district
+        AND c.id = d.county
+        AND f.facility_code = l.facility_code
+		AND l.end_time_of_event BETWEEN '$start_date' AND '$last_date'
+		AND l.issued = '0'
+		AND l.action = 'Logged Out'");
 		return $data;
 	}
     public static function get_last_redistribution($facility_code)

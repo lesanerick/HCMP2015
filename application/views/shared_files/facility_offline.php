@@ -107,7 +107,11 @@
 							</p>
 							<br/>
 							<table id="users_table" class="table table-hover table-bordered table-update" style="margin-left: 6%;width: 90%;margin-top: 1%;float: left;">
-								<tr><th>Full Name</th><th>Date Created</th></tr>
+								<tr>
+									<th><input name="select_all" value="1" id="select_all_users" type="checkbox" />Select</th>
+									<th>Full Name</th>
+									<th>Date Created</th>
+								</tr>
 							</table>
 							<br/>
 							<button id="step2a_advance" class="form-control step3 btn btn-success" style="width:10%;margin-top: 1%;float: left;margin-left:1%;margin-bottom: 1%">	Step 3
@@ -130,7 +134,7 @@
 					<!-- Step 3 Download Data -->
 
 					<div id="step_3">
-						<h3>Step 2: Download Database </h3>						
+						<h3>Step 3: Download Database </h3>						
 						<p style="margin-top:0%;margin-left:6%;color:#000;font-size:16px;margin-bottom: 3%">
 							<span style="float: left;">
 							You can now be able to Download your Facility Data. THe data will have Users added in Step 2, which you can use to log in once set up. 
@@ -139,6 +143,19 @@
 						<br/>							
 						<br/>
 						<button id="step3_advance" class="form-control make_db btn btn-success" style="width:10%;margin-top: 1%;float: left;margin-left:1%;margin-bottom: 1%">		Download Data
+						</button>						
+						
+					</div>
+					<div id="step_4">
+						<h3>Step 4: Download Database Installer File </h3>						
+						<p style="margin-top:0%;margin-left:6%;color:#000;font-size:16px;margin-bottom: 3%">
+							<span style="float: left;">
+							You can now be able to Download required Files for Setup. Place the bat file and the Database File in the same folder as the setup. 
+							</span>													
+						</p>
+						<br/>							
+						<br/>
+						<button id="step4_advance" class="form-control make_bat btn btn-success" style="width:10%;margin-top: 1%;float: left;margin-left:1%;margin-bottom: 1%">		Download Additional Files
 						</button>						
 						
 					</div>
@@ -186,6 +203,7 @@
 	   	$("#step_1").hide();
 	   	$("#step_2").hide();
 	   	$("#step_3").hide();	   	
+	   	$("#step_4").hide();	   	
    	}
 
    	function activateFacility(){
@@ -209,10 +227,14 @@
 					if(count==0){
 						$("#users_none").show();
 					}else{
-						$.each(users, function( index, value ) {
-	                       var row = $("<tr><td>" + value[0] + "</td><td>" + value[1] + "</td><td>"+value[2]+"</td></tr>");
-	                       $("#users_table").append(row);
-	                    });
+						$("#users_table tbody > tr").remove();
+						var table_header = $("<tr><th><input type=\"checkbox\" id=\"select_all_users\" name=\"select_all\"/>Select</th><th>Full Name</th><th>Date Created</th></tr>");
+						$("#users_table").append(table_header);
+						// $.each(users, function( index, value ) {
+	     //                   var row = $("<tr><td>" + value[0] + "</td><td>" + value[1] + "</td><td>"+value[2]+"</td></tr>");
+	     //                   var row = $("<tr><td><input type=\"checkbox\"/></td><td>" + value[0] + "</td><td>" + value[1] + "</td></tr>");
+	     //                   $("#users_table").append(row);
+	     //                });
 						$("#activate").hide();	                    
 						// $("#users_none").hide();	                    
 						// $("#users_all").show();	                    
@@ -225,6 +247,7 @@
 			$("#activated").show();
 	  	}
    	}
+
 
    	function getUsers(){
    		var facility_code = $("#facility_select").val();
@@ -240,8 +263,10 @@
 				if(count==0){
 					$("#no_users").show();
 				}else{
+					//$("#users_table tbody > tr").remove();
 					$.each(users, function( index, value ) {
-		               var row = $("<tr><td>" + value[0] + "</td><td>" + value[1] + "</td></tr>");
+
+		               var row = $("<tr><td><input class=\"selected_users\" type=\"checkbox\" value=\""+value[2]+"\"/></td><td>" + value[0] + "</td><td>" + value[1] + "</td></tr>");
 		               $("#users_table").append(row);
 		            });
 					$("#active_users").show();	                    			
@@ -251,10 +276,15 @@
 				console.log(e.responseText);
 			}
 		});
-		
-
-	  	
+		 	
    	}
+
+
+   	$("#select_all_users").change(function () {
+    	$("input:checkbox").prop('checked', $(this).prop("checked"));
+	});
+
+
    	function loadStep1(){
    		hideAll();   		
 	   	$("#step_1").show();   		
@@ -271,6 +301,11 @@
    		hideAll();   		
 	   	$("#step_3").show();   		   		
    	}
+
+	function loadStep4(){
+   		hideAll();   		
+	   	$("#step_4").show();   		   		
+   	}
 	$('#filter_facility').click(function() {	    
 	  	loadStep1();	  	
 	});
@@ -283,26 +318,63 @@
 	  	loadStep3();	  	
 	});
 
-	$('#reset_pass').click(function() {
-	    // handle deletion here
-	  	var facility_code = $("#facility_select").val();
-	  	var my_message = '';
-  		var base_url = "<?php echo base_url() . 'user/reset_multiple_pass/'; ?>";
-	    var url = base_url+facility_code;			    
-		$.ajax({
-			url: url,
-			dataType: 'json',
-			success: function(s){				
-				my_message = "User passwords reset successfully";				
-				alertify.set({ delay: 10000 });
-          		alertify.success(my_message, null);
-			},
-			error: function(e){
-				console.log(e.responseText);
-			}
-		});
+	// $('#reset_pass').click(function() {
+	//     // handle deletion here
+	//   	var facility_code = $("#facility_select").val();
+	//   	var my_message = '';
+ //  		var base_url = "<?php echo base_url() . 'user/reset_multiple_pass/'; ?>";
+	//     var url = base_url+facility_code;			    
+	// 	$.ajax({
+	// 		url: url,
+	// 		dataType: 'json',
+	// 		success: function(s){				
+	// 			my_message = "User passwords reset successfully";				
+	// 			alertify.set({ delay: 10000 });
+ //          		alertify.success(my_message, null);
+	// 		},
+	// 		error: function(e){
+	// 			console.log(e.responseText);
+	// 		}
+	// 	});
 	  	
+	// });
+
+
+
+	$('#reset_pass').click(function() {
+		var my_message = '';
+		var url = "<?php echo base_url() .'user/reset_select_multiple_pass/'; ?>";
+		var users_array = [];
+		$(".selected_users:checked").each(function(){
+			var user_id = $(this).val();
+			users_array.push(user_id);					
+							
+		});
+		if(users_array.length<1){
+			//console.log("No user selected");
+			my_message = "Kindly select a user";				
+			alertify.set({ delay: 3000 });
+	        alertify.error(my_message, null);
+		}else{
+			$.ajax({
+					url: url,
+					dataType: 'json',
+					data: users_array,
+				success: function(s){				
+					my_message = "User passwords reset successfully";				
+					alertify.set({ delay: 3000 });
+	          		alertify.success(my_message, null);
+				},
+				error: function(e){
+					console.log(e.responseText);
+				}
+			});
+
+		}
+		// console.log(my_array);
+		
 	});
+
 
 	$("#add_user_inactive").click(function(){
 		$("#addModal").show();
@@ -318,6 +390,15 @@
 	  	var facility_code = $("#facility_select").val();		
 		var url = base_url+facility_code+'/hcmp_rtk';				
 		window.open(url, '_blank'); 
+		loadStep4();
+	});
+
+	$('.make_bat').click(function(e){
+		var base_url = "<?php echo base_url() . 'dumper/gen_bat/'; ?>";
+	  	var facility_code = $("#facility_select").val();		
+		var url = base_url+facility_code+'/hcmp_rtk';				
+		window.open(url, '_blank'); 
+		// loadStep4();
 	});
 	$("#btn_activate_facility").click(function(){
 		var facility_code = $("#facility_select").val();

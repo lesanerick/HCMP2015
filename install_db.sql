@@ -1,0 +1,1 @@
+C:\xampp\mysql\mysql.exe -u root -p hcmp_rtk&lt;install_db.sql\n pause
