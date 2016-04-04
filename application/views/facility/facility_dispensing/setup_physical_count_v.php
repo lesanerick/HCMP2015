@@ -15,8 +15,8 @@
 </div>
 <center>
 <div style="max-height:600px; overflow-y:auto; width: 96%">
-<form id="update_sp_stock" method="post" action="<?php echo base_url('dispensing/update_service_point_prices')?>">
-<table width="100%" class="row-fluid table table-hover table-bordered table-update"  id="example">
+<form id="update_sp_stock" method="post" action="<?php echo base_url('dispensing/update_physical_count')?>">
+<table width="100%" class="row-fluid table table-hover table-bordered table-update"  id="example" >
 <thead>
 <tr style="background-color: white">						
 						<th>Facility&nbsp;Code</th>
@@ -31,19 +31,23 @@
 </tr>
 </thead>
 <tbody>
-<?php   foreach($commodities as $facility_commodities):
-	       $status=$facility_commodities['selected']=='1' ? 'checked="true"'  : null; 	   
+<?php   
+		$row_id = 0;
+		foreach($commodities as $facility_commodities):
+	       $status=$facility_commodities['selected']=='1' ? 'checked="true"'  : null; 	
+	       
 		   echo "<tr>
-		   <input type='hidden' name='commodity_id[]' class='commodity_id' value='$facility_commodities[commodity_id]'/>	   
+		   <input type='hidden' name='commodity_id[]' class='commodity_id' value='$facility_commodities[service_point_stock_id]'/>	   
 		   <td>$facility_commodities[facility_code]</td>	
 		   <td>$facility_commodities[commodity_name]</td>	 
 		   <td>$facility_commodities[price]</td>
 		   <td>$facility_commodities[total_commodity_units]</td>
-		   <td>$facility_commodities[current_balance]</td>
+		   <td><input class='form-control input-small current_balance' value='$facility_commodities[current_balance]' readonly='true' /></td>
 		   <td>$facility_commodities[batch_no]</td>
-		   <td><input class='form-control input-small price' type='text' name='physical_count' value='$facility_commodities[physical_count]' </td>
-		   <td><input class='form-control input-small price' type='text' name='reason'  </td>
+		   <td><input class='form-control input-small physical_count' type='text' name='physical_count[$row_id]' value='$facility_commodities[physical_count]' </td>
+		   <td><input class='form-control input-small reason' type='text' name='reason[$row_id]'  </td>
 		   </tr>"; 
+		   $row_id++;
        endforeach; 
 ?>
 </tbody>
@@ -60,6 +64,21 @@
 </div>
 <script>
 $(document).ready(function() {	
+	$(".reason").attr('readonly', true);
+	$(".physical_count").on("keyup", function(){
+		// console.log($(this).val());
+		var physicalCount = $(this).closest("tr").find(".physical_count").val();
+		var currentBalance = $(this).closest("tr").find(".current_balance").val();
+		if(physicalCount > currentBalance || physicalCount < currentBalance){
+			// alert("Physical Count and Current Balance not match. Enter an explanation!");
+			 $(this).closest("tr").find(".reason").attr('readonly',false);
+		}
+		else{
+			$(this).closest("tr").find(".reason").attr('readonly',true);
+		}
+		// console.log(physicalCount);
+	});
+
 	window.onbeforeunload = function() {
         return "Are you sure you want to leave?";
     }
@@ -95,6 +114,10 @@ $(document).ready(function() {
 	
 		
 	});
+
+	
+
+
 })
  
 </script>

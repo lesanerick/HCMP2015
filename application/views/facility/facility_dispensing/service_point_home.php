@@ -113,7 +113,7 @@
 									<a href="<?php echo base_url('dispensing/patient_history'); ?>"><h5>Reports</h5></a>
 								</div>
 								<div style="height: auto; margin-bottom: 2px; " class="distribute message">
-									<a href="<?php echo base_url('dispensing/setup_physical_count'); ?>"><h5>Phyisical Stock Count</h5></a>
+									<a href="<?php echo base_url('dispensing/setup_physical_count'); ?>"><h5>Physical Stock Count</h5></a>
 								</div>
 								<?php endif; ?>
 					</div>

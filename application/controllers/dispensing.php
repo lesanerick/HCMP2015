@@ -106,8 +106,32 @@ class Dispensing extends MY_Controller {
 		$data['content_view'] = "facility/facility_dispensing/setup_physical_count_v";
 		$data['banner_text'] = "Set Up Physical Stock Count";
 		$data['commodities'] = facility_stocks::get_service_point_stocks($facility_code,2,NULL,NULL);
-		//var_dump($data);
+		// var_dump($data);
+
+		// echo "<pre>";
+		// print_r($data);
+		// echo "</pre>";
+		// exit;
 		$this -> load -> view("shared_files/template/template", $data);
+	}
+
+	public function update_physical_count(){
+
+		$count = count($this->input->post('commodity_id'));
+		for ($i=0; $i < $count; $i++) { 
+			$id = $this->input->post('commodity_id')[$i];
+			$physical_count =  $this->input->post('physical_count')[$i];
+			$reason = $this->input->post('reason')[$i] ;
+			// $physical_count = isset($this->input->post('physical_count')[$i])? $this->input->post('physical_count')[$i] : NULL;
+			// $reason = isset($this->input->post('reason')[$i])? $this->input->post('reason')[$i] : NULL;
+			// echo $id .": " .$physical_count ." ".$reason ."<br>";
+
+			$stock = facility_stocks::update_service_point_physical_count($id, $physical_count, $reason);
+			
+		}
+		$this->session->set_flashdata('system_success_message', 'Service Point Physical Count updated');
+		redirect('dispensing');
+
 	}
 
 	public function issue(){

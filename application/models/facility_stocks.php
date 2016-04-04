@@ -1753,7 +1753,8 @@ class Facility_stocks extends Doctrine_Record {
 			    sp.batch_no,
 			    sp.expiry_date,
 			    s.id AS service_point_id,
-			    s.service_point_name
+			    s.service_point_name,
+			    sp.physical_count
 			FROM
 			    service_point_stocks sp,
 			    service_points s,
@@ -1762,5 +1763,12 @@ class Facility_stocks extends Doctrine_Record {
 			    s.id = sp.service_point_id AND c.id = sp.commodity_id $posterior
     	");
 		return $query;
+	}
+
+	public static function update_service_point_physical_count($id, $physical_count, $reason){
+		$q = Doctrine_Manager::getInstance()->getCurrentConnection()->execute("
+			UPDATE service_point_stocks set `physical_count`='$physical_count', reason = '$reason' 
+			where `id`='$id' 
+			");		
 	}
 }
