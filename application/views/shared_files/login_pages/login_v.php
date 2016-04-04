@@ -36,7 +36,109 @@
 			button {
 				border-radius: 0 !important;
 			}
+			.green{
+			    color:green;
+			  }
+		  .no-margin{
+		    margin:0;
+		  }
+		  .small-margin{
+		    margin:2px;
+		  }
+		  .online-status{
+		    font-size: 15px;
+		  }
+		  .red{
+		    color:#F22613;
+		  }
 		</style>
+
+		<!-- STYLING FOR NEW LOGIN -->
+			<style>
+			.login {
+			  width: 100%;
+			  margin: 16px auto;
+			  font-size: 16px;
+			}
+
+			/* Reset top and bottom margins from certain elements */
+			.login-header,
+			.login p {
+			  margin-top: 0;
+			  margin-bottom: 0;
+			}
+
+			/* The triangle form is achieved by a CSS hack */
+			.login-triangle {
+			  width: 0;
+			  margin-right: auto;
+			  margin-left: auto;
+			  border: 12px solid transparent;
+			  border-bottom-color: #144d6e;
+			}
+
+			.login-header {
+			  background: #144d6e;
+			  padding: 20px;
+			  font-size: 1.4em;
+			  font-weight: normal;
+			  text-align: center;
+			  text-transform: uppercase;
+			  color: #fff;
+			}
+
+			.login-container {
+			  background: #ebebeb;
+			  padding: 12px;
+			}
+
+			/* Every row inside .login-container is defined with p tags */
+			.login p {
+			  padding: 12px;
+			}
+
+			.login input {
+			  box-sizing: border-box;
+			  display: block;
+			  width: 100%;
+			  border-width: 1px;
+			  border-style: solid;
+			  padding: 16px;
+			  outline: 0;
+			  font-family: inherit;
+			  font-size: 0.95em;
+			}
+
+			.login input[type="email"],
+			.login input[type="password"] {
+			  background: #fff;
+			  border-color: #bbb;
+			  color: #555;
+			}
+
+			/* Text fields' focus effect */
+			.login input[type="email"]:focus,
+			.login input[type="password"]:focus {
+			  border-color: #888;
+			}
+
+			.login input[type="submit"] {
+			  background: #144d6e;
+			  border-color: transparent;
+			  color: #fff;
+			  cursor: pointer;
+			}
+
+			.login input[type="submit"]:hover {
+			  background: #144d6e;
+			}
+
+			/* Buttons' focus effect */
+			.login input[type="submit"]:focus {
+			  border-color: #144d6e;
+			}
+			</style>
+						<!-- END OF STYLING FOR NEW LOGIN -->
 		<?php 
 		$myurl=$this->uri->segment(2);
 					      
@@ -82,24 +184,30 @@
 		</script>
 	</head>
 	<body data-spy="scroll" data-target=".subnav" data-offset="50" screen_capture_injected="true" style="padding: 0;">
-		<div class="navbar  navbar-static-top" id="top-panel">
-			<a href="<?php echo base_url(); ?>"> <img style="max-width: 9em; float: left; margin-right: 2px;" src="<?php echo base_url(); ?>assets/img/coat_of_arms.png" class="img-responsive " alt="Responsive image"></a>
-
-			<div id="logo_text" style="margin-top: 3%">
+		<div class="navbar  navbar-static-top col-md-12" id="top-panel">
+			<div class="col-md-12">
+			<a href="<?php echo base_url(); ?>"> 
+				<img style="max-width: 9em;margin:auto;" src="<?php echo base_url(); ?>assets/img/coat_of_arms.png" class="img-responsive " alt="Responsive image"></a>
+			</div>
+			<div class="col-md-12">
+				
+			<div class="col-md-12" id="logo_text">
+			<center>
 				<span style="font-size: 1.7em;font-weight: bold">Ministry of Health</span>
 				<br />
-				<span style="font-size: 1.3em">Health Commodities Management Platform (HCMP)</span>
+				<span style="font-size: 1.3em">Health Commodities Management Platform</span>
+    <!-- <div class="online-status"><span class="red"><b><span class="glyphicon glyphicon-off small-margin"></span>Off</span>line</b></div> -->
+    			<div class="online-status"><span class="green"><b><span class="glyphicon glyphicon-off small-margin"></span>On</span>line</b></div>
+
+			</center>
 			</div>
 
-			<div class="pull-right" style="top: 0">
-				<a href="<?php echo base_url('kenya') ?>">
-				<button class="btn btn-success ">
-					<span class="glyphicon glyphicon-dashboard"></span> Dashboard
-				</button></a>
-			</div>
+			
 
+			</div>
 		</div>
-		<div class="container-fluid">
+		
+		<div class="container-fluid col-md-10">
 
 			<div class="row">
 				<div class="col-md-4" style="">
@@ -111,16 +219,16 @@
 					if ($popup == "errorpopup") {
 
 						echo '<div class="alert alert-danger alert-dismissable" style="text-align:center;"> Error! Wrong Credentials! Try Again.
-<button type="button" class=" close" data-dismiss="alert" aria-hidden="true">×</button>
-', '</div>';
+								<button type="button" class=" close" data-dismiss="alert" aria-hidden="true">×</button>
+								', '</div>';
 					} elseif ($popup == "passwordchange") {
 						echo '<div class="alert alert-success alert-dismissable" style="text-align:center;">Your password ' . $user_email . ' has been changed. Please login.
-<button type="button" class=" close" data-dismiss="alert" aria-hidden="true">×</button>
-', '</div>';
-					} elseif ($popup == "activation") {
-						echo '<div class="alert alert-success alert-dismissable" style="text-align:center;">Your account has been Activated. Please login.
-<button type="button" class=" close" data-dismiss="alert" aria-hidden="true">×</button>
-', '</div>';
+							<button type="button" class=" close" data-dismiss="alert" aria-hidden="true">×</button>
+							', '</div>';
+												} elseif ($popup == "activation") {
+													echo '<div class="alert alert-success alert-dismissable" style="text-align:center;">Your account has been Activated. Please login.
+							<button type="button" class=" close" data-dismiss="alert" aria-hidden="true">×</button>
+							', '</div>';
 					}
 					unset($popup);
 					?>
@@ -131,8 +239,14 @@
 			</div>
 
 		</div>
+		<div class="col-md-2 pull-right">
+				<a href="<?php echo base_url('kenya') ?>">
+				<button class="btn btn-success col-md-12">
+					<span class="glyphicon glyphicon-dashboard"></span>National Dashboard
+				</button></a>
+		</div>
 
-		<div class="container" style="margin-top: 3%;" id="containerlogin">
+		<div class="container" style="" id="containerlogin">
 
 			<div class="row">
 			<div class="col-md-3">
@@ -144,13 +258,36 @@
 						<img src="<?php echo base_url('assets/img/healpdesk.jpg')?>" height="140" width="200" />
 						
 
-				</div>
+			</div>
 
-				<div class="col-md-6">
-					<div class="row">
+			<div class="col-md-7">
+					<div class="row col-md-12">
 						<!--<div class="col-md-1"></div>-->
 						<div class="col-md-12">
-							<div id="contain_login" class="">
+						
+						<!-- NEW LOGIN -->
+						<div class="login">
+						  <!-- <div class="login-triangle"></div> -->
+						  
+						  <h2 class="login-header">Log in</h2>
+
+						  <!-- <form class="login-container"> -->
+							<div class="login-container col-md-12">
+							<?php echo form_open('user/login_submit'); ?>
+							<p><input type="email" name="username" id="username" placeholder="Enter email" required="required"></p>
+						    <p><input type="password" name="password" id="password" placeholder="Password" required="required"></p>
+						    <p><input type="submit" name="register" id="register" value="Log in"></p>
+
+						    <a class="" style="margin-left: 2%;" href="<?php echo base_url().'user/forgot_password'?>" id="modalbox">Can't access your account ?</a>
+							<a class="" style="margin-left: 2%;" href="<?php echo base_url().'user/sms_activate'?>" id="modalbox">Activate my Account?</a>
+							<?php echo form_close(); ?>
+							</div>
+
+						  <!-- </form> -->
+						</div>
+						<!-- LIVE A LITTLE -->
+
+							<!-- <div id="contain_login" class="">
 								<h2><span style="margin-right: 0.5em;" class="glyphicon glyphicon-lock"></span>Login</h2>
 								<?php echo form_open('user/login_submit'); ?>
 								<div id="login" >
@@ -168,19 +305,20 @@
 
 									<a class="" style="margin-left: 2%;" href="<?php echo base_url().'user/forgot_password'?>" id="modalbox">Can't access your account ?</a>
 									<a class="" style="margin-left: 2%;" href="<?php echo base_url().'user/sms_activate'?>" id="modalbox">Activate my Account?</a>
-									<!-- <a class="" style="margin-left: 2%;" href="mailto:hcmphelpdesk@googlegroups.com" id="modalbox">Report problems</a> -->
 
 								</div>
 
 								<?php echo form_close(); ?>
-							</div><!-- #contain_login -->
+							</div> -->
+
+
+							<!-- #contain_login -->
 
 						</div>
 						<!--<div class="col-md-1"></div>-->
 
 					</div><!-- .row #contain_login -->
 				</div>
-				<div class="col-md-3"></div>
 
 			</div><!-- .row -->
 		</div><!-- .container -->

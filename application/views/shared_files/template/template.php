@@ -130,7 +130,21 @@ var url="<?php echo base_url(); ?>";
     width: 100%;
     border-radius: 0px;
   }
-
+  .green{
+    color:green;
+  }
+  .no-margin{
+    margin:0;
+  }
+  .small-margin{
+    margin:2px;
+  }
+  .online-status{
+    font-size: 15px;
+  }
+  .red{
+    color:#F22613;
+  }
 </style>
 
 
@@ -243,6 +257,8 @@ var url="<?php echo base_url(); ?>";
   </div>
   <center>
     <div class="col-md-4"style="font-weight:bold;">  
+    <div class="online-status"><span class="green"><span class="glyphicon glyphicon-off small-margin"></span>On</span>line</div>
+    <!-- <div class="online-status"><span class="red"><span class="glyphicon glyphicon-off small-margin"></span>Off</span>line</div> -->
       <span><?php echo $this-> session -> userdata('facility_count'); ?>  </span>			
     </div>
   </center>

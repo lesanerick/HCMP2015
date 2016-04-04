@@ -172,6 +172,7 @@ class orders extends MY_Controller {
 	}
 
 	public function facility_order($source = NULL,$facility_code=null) {
+		echo "<pre>";print_r($_FILES);exit;
 		header('Content-Type: text/html; charset=UTF-8');
 		//pick the facility code from the session as it is set
 		if(!isset($facility_code)){

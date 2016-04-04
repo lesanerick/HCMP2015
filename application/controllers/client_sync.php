@@ -20,13 +20,53 @@ class Client_sync extends MY_Controller {
 	function index(){
 		$data['title'] = "System Database Updates";
 		// $data['last_sync'] = $current_time =date('Y-m-d H:i:s');//this is wrong. last sync is to be gotten from database
-		$data['last_sync'] = 
+		// $data['last_sync'] = 
 		$data['banner_text'] = "System Database Management";		
 		$template = 'shared_files/template/template';			
 		$data['content_view'] = 'facility/facility_db';			
 		
 		$this -> load -> view($template, $data);
 
+	}
+
+	public function database_setup(){
+		$data['title'] = "System Database Setup";
+		// $data['last_sync'] = $current_time =date('Y-m-d H:i:s');//this is wrong. last sync is to be gotten from database
+		$data['last_sync'] = 
+		$data['banner_text'] = "System Database Management";		
+		$template = 'shared_files/template/template';			
+		$data['content_view'] = 'facility/facility_db_setup';			
+		
+		$this -> load -> view($template, $data);
+
+	}
+
+	public function upload_db_file(){
+		// echo "<pre>This";print_r($_FILES);echo "</pre>";exit;
+		echo "<pre>";print_r($_FILES);exit;
+
+		$config['upload_path'] = 'database/';
+		// $config['allowed_types'] = 'txt';
+		$config['allowed_types'] = 'gif|jpg|png|jpeg|jpe|pdf|doc|docx|rtf|text|txt';
+		$config['max_size']	= '3000000000';
+		// $input = $this->input->post();
+
+		$this->load->library('upload', $config);
+		echo "<pre>";print_r($this->upload->data());exit;
+
+		// echo "<pre>This";print_r($upload);echo "</pre>";
+		
+		if ( ! $this->upload->do_upload('db_file'))
+		{
+			$error = array('error' => $this->upload->display_errors());
+
+			echo "<pre>";print_r($error);exit;
+		}
+		else
+		{
+			$data = array('upload_data' => $this->upload->data());
+			echo "<pre>";print_r($data);exit;
+		}
 	}
 
 
