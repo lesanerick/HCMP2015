@@ -9,6 +9,7 @@ class Log extends Doctrine_Record {
 		$this -> hasColumn('action_id', 'int',50);
 		$this -> hasColumn('start_time_of_event', 'date');
 		$this -> hasColumn('end_time_of_event', 'date');
+		$this -> hasColumn('facility_code', 'varchar',50);
 	
 	}
 

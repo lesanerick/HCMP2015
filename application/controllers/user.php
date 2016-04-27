@@ -128,12 +128,12 @@ class User extends MY_Controller {
 			
 			//creating a new log value
 			Log::update_log_out_action($this -> session -> userdata('user_id'));
-			
+			$facility_code = $this -> session -> userdata('facility_id');
 			$u1 = new Log();
 			$action = 'Logged In';
-			$u1->facility_code = $facility_id;
-			$u1->user_id = $this -> session -> userdata('user_id');
-			$u1->action = $action;
+			$u1->user_id = $this -> session -> userdata('user_id');			
+			$u1->action = $action;			
+			$u1->facility_code = ($facility_code==0) ? null : $facility_code;
 			$u1->save();
 			
 			redirect('home');

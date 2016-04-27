@@ -58,7 +58,7 @@
                 <h4 class="modal-title">Upload report listing excel</h4>
             </div>
             <div class="modal-body">
-                <?php $attr = array('id'=>'upload_form','class'=>''); echo form_open_multipart('Admin/upload_report_listing_excel',$attr); ?>
+                <?php $attr = array('id'=>'upload_form','class'=>''); echo form_open_multipart('admin/upload_report_listing_excel',$attr); ?>
                 <table class="table table-bordered">
                     <tbody>
                         <tr>

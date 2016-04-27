@@ -143,7 +143,7 @@
       <th ><b>Facility Code</b></th>
       <th ><b>Sub-County</b></th>
       <th ><b>County</b></th>
-      <th ><b>Number of Logins</b></th>
+      <!-- <th ><b>Number of Logins</b></th> -->
     </tr> 
   </thead>
   <tbody>
@@ -151,6 +151,7 @@
       $row_data = $monthly_logs['logged_in_count'];      
       $count = count($row_data);
       foreach ($row_data as $key => $value) {
+        // echo "<pre>";print_r($value);die;
         $facility_name = $value['facility_name'];
         $facility_code = $value['facility_code'];
         $sub_county = $value['district'];
@@ -161,7 +162,7 @@
           <td><?php echo $facility_code;?></td>
           <td><?php echo $sub_county;?></td>
           <td><?php echo $county;?></td>
-          <td><?php echo $number;?></td>
+          <!-- <td><?php //echo $number;?></td> -->
         </tr>
       <?php }
      
@@ -265,7 +266,7 @@
       <th ><b>Facility Code</b></th>
       <th ><b>Sub-County</b></th>
       <th ><b>County</b></th>
-      <th ><b>Number of Issues</b></th>
+      <!-- <th ><b>Number of Issues</b></th> -->
     </tr> 
   </thead>
   <tbody>
@@ -283,7 +284,7 @@
           <td><?php echo $facility_code;?></td>
           <td><?php echo $sub_county;?></td>
           <td><?php echo $county;?></td>
-          <td><?php echo $number;?></td>
+          <!-- <td><?php //echo $number;?></td> -->
         </tr>
       <?php }
      

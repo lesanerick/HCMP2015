@@ -304,8 +304,7 @@ Pace.on('hide', function(){
 //   console.log('done');
 });
 
-var url="<?php echo base_url(); ?>
-	";
+var url="<?php echo base_url(); ?>";
 
 	});
 	
@@ -381,6 +380,7 @@ var url="<?php echo base_url(); ?>
       
     function run(data){
         var county_data=data.split('^');
+        // console.log(county_data);
         $('#placeholder').val(county_data[0]);
         $('.county-name').html(county_data[1]+"&nbsp;County &nbsp;");
         ajax_request_replace_div_content('national/facility_over_view/'+county_data[0],"#facilities_rolled_out");

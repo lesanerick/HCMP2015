@@ -628,7 +628,7 @@ class Admin extends MY_Controller {
 		    array_push($rowData, $rowData_[0]);
 		    //  Insert row data array into your database of choice here
 		}
-		echo "<pre>";print_r($rowData);exit;//Titus,comment this out to proceed and see the sanitization. It selects the district id based on the district in the excel,same for county.
+		// echo "<pre>";print_r($rowData);exit;//Titus,comment this out to proceed and see the sanitization. It selects the district id based on the district in the excel,same for county.
 		foreach ($rowData as $r_data) {
 			// echo "<pre>";print_r($r_data);echo "</pre>";
 			$status = 1;
@@ -1020,9 +1020,32 @@ class Admin extends MY_Controller {
     				case when el.sub_county != '' then (select d.district from districts d where d.id = el.sub_county) else 'N/A' end as district,
     				case when el.county != '' then (select c.county from counties c where c.id = el.county) else 'N/A' end as county    
 					FROM   email_listing_new el, access_level al where al.id = el.usertype and el.status = '0'";
+
 		$result = $this->db->query($query)->result_array();//FACILITY CODE SEARCH
 		// echo "<pre>";print_r($result);exit;	
 		return $result;
+	}
+
+	public function set_log_facility(){
+		$sql = "select distinct user_id from log where user_id in (select distinct id from user)";
+		$result = $this->db->query($sql)->result_array();	
+		// echo count($result);die;	
+			// echo "<pre>";print_r($result_facilities);die;
+
+		foreach ($result as $key => $value) {
+			$user_id = $value['user_id'];
+			$sql_get_facility = "select facility from user where id='$user_id'";
+			$result_facilities = $this->db->query($sql_get_facility)->result_array();
+			foreach ($result_facilities as $keys => $values) {
+				$facility_code = $values['facility'];
+				if($facility_code!=0){
+					$sql_update  = "update log set facility_code='$facility_code' where user_id='$user_id'";
+					$this->db->query($sql_update);
+				}
+			}
+
+
+		}
 	}
 
 

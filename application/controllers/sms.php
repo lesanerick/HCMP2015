@@ -2381,10 +2381,10 @@ public function new_weekly_usage($year=null,$month=null){
 	$end_date = $year.'-'.$month.'-31';		
 	$logged_within_month = Facilities::get_facilities_logged_in_month($start_date,$end_date);
 	$issued_within_month = Facilities::get_facilities_issued_in_month($start_date,$end_date);
-	$not_logged_within_month = Facilities::get_facilities_not_logged_in_month($start_date,$end_date);
-	$not_issued_within_month = Facilities::get_facilities_not_issued_in_month($start_date,$end_date);
-	$logged_within_month_4 = Facilities::get_facilities_logged_in_count($start_date,$end_date,4);
-	$issued_within_month_4 = Facilities::get_facilities_issued_in_count($start_date,$end_date,4);
+	$not_logged_within_month = Facilities::get_facilities_not_in_month($start_date,$end_date);
+	$not_issued_within_month = Facilities::get_facilities_not_in_month($start_date,$end_date,null,null,'issued');
+	$logged_within_month_4 = Facilities::get_facilities_count($start_date,$end_date,4);
+	$issued_within_month_4 = Facilities::get_facilities_count($start_date,$end_date,4,null,null,'issued');
 
 	$data['monthly_logs'] =array('logged_in'=>$logged_within_month,'not_logged_in'=>$not_logged_within_month,'logged_in_count'=>$logged_within_month_4,'issued_within_month'=>$issued_within_month,'issued_count'=>$issued_within_month_4,'not_issued'=>$not_issued_within_month);
 
@@ -2667,8 +2667,10 @@ public function log_summary_weekly_view(){
 
 		
 	}
-	public function log_summary_weekly(){
+	public function log_summary_weekly($county_id = NULL,$district_id = NULL,$facility_code = NULL){
 		$time=date('M , d Y');
+		$time_file= $time.'_'.date('h').'_'.date('i').'_'.date('s');
+		// echo "$time_file";die;
 
 		$active_facilities = Facilities::getAll_();
 // echo "<pre>";print_r($active_facilities);echo "</pre>";exit;
@@ -2869,7 +2871,7 @@ public function log_summary_weekly_view(){
 		endforeach;
 		$excel_data = array();
 			// $excel_data = array('doc_creator' => 'HCMP ', 'doc_title' => 'System Usage Breakdown ', 'file_name' => 'system usage breakdown');
-		$excel_data = array('doc_creator' => 'HCMP-Kenya', 'doc_title' => 'HCMP_Facility_Activity_Log_Summary ', 'file_name' => 'HCMP_Facility_Activity_Log_Summary_as_at_'.$time);
+		$excel_data = array('doc_creator' => 'HCMP-Kenya', 'doc_title' => 'HCMP_Facility_Activity_Log_Summary ', 'file_name' => 'HCMP_Facility_Activity_Log_Summary_as_at_'.$time_file);
 		$column_data = array(
 			"Facility Name", 
 			"Facility Code", 
@@ -2955,11 +2957,11 @@ public function log_summary_weekly_view(){
 		</tr>
 	</table><!-- /BODY -->";	
 
-	$handler = "./print_docs/excel/excel_files/" . $excel_data['file_name'] . ".xls";
+	$handler = "/print_docs/excel/excel_files/" . $excel_data['file_name'] . ".xls";
 	$subject = "System Usage as at ".$time;
 
 	$email_address = "smutheu@clintonhealthaccess.org,karsanrichard@gmail.com,ttunduny@gmail.com,teddyodera@gmail.com";
-						// $email_address = "karsanrichard@gmail.com,ttunduny@gmail.com";
+						// $email_address = "karsanrichard@gmail.com,ttunduny@gmail.com,lesaneric@gmail.com";
                         // $email_address = "ttunduny@gmail.com";
                         //$bcc = "";
 	$this -> hcmp_functions -> send_email($email_address, $message, $subject, $handler);

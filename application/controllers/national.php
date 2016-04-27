@@ -618,6 +618,11 @@ public function stock_level_mos($county_id = null, $district_id = null, $facilit
 	$and_data .= ($county_id > 0) ? " AND ct.id='$county_id'" : null;
 	// $and_data .= ($county_id > 0) ? " AND counties.id='$county_id'" : null;
 	$and_data = isset($and_data) ? $and_data : null;
+
+	$from_others = null;
+	$from_others .= ($district_id > 0) ? "districts d," : null;
+	$from_others .= ($county_id > 0) ? "counties ct," : null;
+
 	if ($graph_type=='excel') {
 		$and_data .= isset($commodity_id) ? "AND d.id =$commodity_id" : "AND d.tracer_item =1";			
 		// $and_data .= isset($commodity_id) ? "AND commodities.id =$commodity_id" : "AND d.tracer_item =1";			
@@ -690,6 +695,18 @@ public function stock_level_mos($county_id = null, $district_id = null, $facilit
 			inner join districts on facilities.district=districts.id
 			inner join counties on districts.county=counties.id inner join commodities on facility_issues.commodity_id=commodities.id where s11_No IN('internal issue','(-ve Adj) Stock Deduction')
 			$and_data group by commodities.id");
+		// echo "$from_others";die;
+		// $new_sql_amc = "SELECT commodities.id,commodities.commodity_name,CEIL(AVG(facility_issues.qty_issued)) AS total_units_consumed, 
+		// 				CEIL((SUM(facility_issues.qty_issued) / 3)) AS amc_units,
+		// 				CEIL((SUM(facility_issues.qty_issued) / 3) / commodities.total_commodity_units) AS amc_packs,commodities.total_commodity_units
+		// 				FROM  $from_others facility_issues  INNER JOIN  commodities  ON facility_issues.commodity_id = commodities.id 
+		// 				WHERE s11_No IN ('internal issue' , '(-ve Adj) Stock Deduction') $and_data 
+		// 				AND facility_issues.expiry_date > '2016-04-21' 
+		// 				AND facility_issues.date_issued  between '2016-02-31' and '2016-04-31'
+		// 				GROUP BY commodities.id order by commodities.id asc";
+		// echo $new_sql_amc;die;
+		$get_amc = Doctrine_Manager::getInstance()->getCurrentConnection()
+		->fetchAll($new_sql_amc);
 
 
 			//return $get_amc ;	
@@ -705,21 +722,36 @@ public function stock_level_mos($county_id = null, $district_id = null, $facilit
 
 	}else {
 
+		// $get_amc = Doctrine_Manager::getInstance()->getCurrentConnection()
+		// ->fetchAll("SELECT commodities.id,commodities.commodity_name,avg(facility_issues.qty_issued) as total_units_consumed,
+		// 	(sum(facility_issues.qty_issued)*30/$datediff)/commodities.total_commodity_units as amc_packs,commodities.total_commodity_units FROM hcmp_rtk.facility_issues 
+		// 	inner join commodities on facility_issues.commodity_id=commodities.id where s11_No IN('internal issue','(-ve Adj) Stock Deduction')
+		// 	$and_data group by commodities.id");
+		// echo "$from_others";die;
+		$new_sql_amc = "SELECT commodities.id,commodities.commodity_name,CEIL(AVG(facility_issues.qty_issued)) AS total_units_consumed, 
+						CEIL((SUM(facility_issues.qty_issued) / 3)) AS amc_units,
+						CEIL((SUM(facility_issues.qty_issued) / 3) / commodities.total_commodity_units) AS amc_packs,commodities.total_commodity_units
+						FROM   facility_issues $from_others INNER JOIN  commodities  ON facility_issues.commodity_id = commodities.id 
+						WHERE s11_No IN ('internal issue' , '(-ve Adj) Stock Deduction') $and_data 
+						AND facility_issues.expiry_date > '2016-04-21' 
+						AND facility_issues.date_issued  between '2016-02-31' and '2016-04-31'
+						GROUP BY commodities.id order by commodities.id asc";
+		// echo $new_sql_amc;die;
 		$get_amc = Doctrine_Manager::getInstance()->getCurrentConnection()
-		->fetchAll("SELECT commodities.id,commodities.commodity_name,avg(facility_issues.qty_issued) as total_units_consumed,
-			(sum(facility_issues.qty_issued)*30/$datediff)/commodities.total_commodity_units as amc_packs,commodities.total_commodity_units FROM hcmp_rtk.facility_issues 
-			inner join commodities on facility_issues.commodity_id=commodities.id where s11_No IN('internal issue','(-ve Adj) Stock Deduction')
-			$and_data group by commodities.id");
-
-
+		->fetchAll($new_sql_amc);
 			//return $get_amc ;	
 
+		// $get_totals = Doctrine_Manager::getInstance()->getCurrentConnection()
+		// ->fetchAll("SELECT commodities.id,commodities.commodity_name,sum(facility_stocks.current_balance) 
+		// 	as total_bal_units, sum(facility_stocks.current_balance)/commodities.total_commodity_units as cur_bal_packs,commodities.total_commodity_units FROM hcmp_rtk.facility_stocks inner join commodities on facility_stocks.commodity_id=commodities.id 
+		// 	where commodities.status=1 $and_data group by commodities.id");
+		
+		$new_sql_totals = "SELECT commodities.id,commodities.commodity_name,CEIL(sum(facility_stocks.current_balance))
+		 	as total_bal_units, CEIL(sum(facility_stocks.current_balance)/commodities.total_commodity_units) as cur_bal_packs,commodities.total_commodity_units FROM facility_stocks $from_others inner join commodities on facility_stocks.commodity_id=commodities.id 
+		 	where commodities.status=1 $and_data AND facility_stocks.expiry_date > '2016-04-21' group by commodities.id order by commodities.id asc";
+
 		$get_totals = Doctrine_Manager::getInstance()->getCurrentConnection()
-		->fetchAll("SELECT commodities.id,commodities.commodity_name,sum(facility_stocks.current_balance) 
-			as total_bal_units, sum(facility_stocks.current_balance)/commodities.total_commodity_units as cur_bal_packs,commodities.total_commodity_units FROM hcmp_rtk.facility_stocks inner join commodities on facility_stocks.commodity_id=commodities.id 
-			where commodities.status=1 $and_data group by commodities.id");
-
-
+		->fetchAll($new_sql_totals);
 	}
 
 
@@ -730,7 +762,7 @@ public function stock_level_mos($county_id = null, $district_id = null, $facilit
 				//array_push($combine,$get_totals[$i ],$get_amc[$i ]);
 		$combine[]=array_merge($get_totals[$i ],$get_amc[$i ]);
 	}
-			//echo '<pre>'; print_r($combine);echo '<pre>'; exit;
+			// echo '<pre>'; print_r($combine);echo '<pre>'; exit;
 
 	$category_data = array();
 	$series_data = $series_data_ = array();
