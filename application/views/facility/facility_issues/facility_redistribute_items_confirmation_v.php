@@ -10,7 +10,13 @@
 </style>
 
 <div class="container" style="width: 96%; margin: auto;">
-	
+	<div class="row">
+	   <div class="col-md-12" style="padding-left: 0; float:right; right:0;clear:both;  margin-bottom:5px;">	
+	 		<a id="upload_excel" href="#modal-dialog-excel" class="btn btn-sm btn-primary float-right margin-right" data-toggle="modal">Upload Redistribution Receivals excel</a>
+	        <a  class="btn btn-sm btn-primary float-right margin-right" href="<?php echo base_url().'admin/download_redistribution_receival_excel'; ?>">Download Redistribution Receivals template for upload</a>
+	        
+		</div> 
+	</div>
 	<div class="row">
 		<div class="col-md-6"><p class="text-danger">*To avoid adding items to your stock, leave the values as zero</p></div>
 		

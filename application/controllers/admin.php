@@ -1013,6 +1013,13 @@ class Admin extends MY_Controller {
 		$filepath = "print_docs/excel/excel_template/report_listing_excel.xlsx";
 	 	$this -> hcmp_functions -> download_file($filepath);
 	}
+	public function download_redistribution_receival_excel() {
+	 	// echo "<pre>";print_r($this->input->get());exit;
+		$filename = "Facility_redistributions.xlsx";		
+	 	$this -> hcmp_functions -> clone_redistribution_template($filepath);
+	 	// $this -> hcmp_functions -> download_file($filepath);
+
+	}
 	public function get_report_listing_data()
 	{
 		$query = "SELECT distinct   el.name, el.email, el.phone_number AS phone, al.level as usertype,el.date_uploaded,

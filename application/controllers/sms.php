@@ -2667,22 +2667,22 @@ public function log_summary_weekly_view(){
 
 		
 	}
-	public function log_summary_weekly($county_id = NULL,$district_id = NULL,$facility_code = NULL){
+	public function log_summary_weekly($county_id = NULL,$district_id = NULL,$facility_code = NULL){//Karsan
 		$time=date('M , d Y');
 		$time_file= $time.'_'.date('h').'_'.date('i').'_'.date('s');
 		// echo "$time_file";die;
 
-		$active_facilities = Facilities::getAll_();
-// echo "<pre>";print_r($active_facilities);echo "</pre>";exit;
+		$active_facilities = Facilities::getAll_($county_id,$district_id);
+		// echo "<pre>";print_r($active_facilities);echo "</pre>";exit;
 		$last_seen = Facilities::get_facility_data_specific(NULL,$county_id,$district_id,$facility_code,'all');
 		$last_issued = Facilities::get_facility_data_specific('last_issued',$county_id,$district_id,$facility_code,'all');
 		$last_ordered = Facilities::get_facility_data_specific('last_ordered',$county_id,$district_id,$facility_code,'all');
 		$decommissioned = Facilities::get_facility_data_specific('last_decommissioned',$county_id,$district_id,$facility_code,'all');
 		$redistributed = Facilities::get_facility_data_specific('last_redistributed',$county_id,$district_id,$facility_code,'all');
 		$added_stock = Facilities::get_facility_data_specific('last_added_stock',$county_id,$district_id,$facility_code,'all');
-// $all_faciliteis = Facilities::getAll_();
+		// $all_faciliteis = Facilities::getAll_();
 
-// echo "<pre>";print_r($all_faciliteis);echo "</pre>";exit;
+		// echo "<pre>";print_r($all_faciliteis);echo "</pre>";exit;
 		$final_array = array();
 		$last_seen_count = count($last_seen);
 		$last_issued_count = count($last_issued);
@@ -2829,7 +2829,7 @@ public function log_summary_weekly_view(){
 			}//end of last seen foreach
 		}
 		
-
+		// echo "<pre>";print_r($final_array);exit;
 
 		$row_data = array();
 		$counterrrr = 0;
@@ -2911,105 +2911,444 @@ public function log_summary_weekly_view(){
 			<td colspan="12">
 			</tr>
 		</tbody>
-	</table>'; 
-	$message.="<!-- BODY -->
-	<table class='body-wrap'>
-		<tr>
-			<td></td>
-			<td class='container' bgcolor='#FFFFFF'>
+		</table>'; 
+		$message.="<!-- BODY -->
+		<table class='body-wrap'>
+			<tr>
+				<td></td>
+				<td class='container' bgcolor='#FFFFFF'>
 
-				<div class='content'>
-					<table>
-						<tr>
-							<td>
+					<div class='content'>
+						<table>
+							<tr>
+								<td>
 
-								<p class='lead'>Find attached a summary of Facility Activity Log, as at $time</p>
+									<p class='lead'>Find attached a summary of Facility Activity Log, as at $time</p>
 
-								<table class='social' width='100%'>
-									<tr>
-										<td>
+									<table class='social' width='100%'>
+										<tr>
+											<td>
 
-											<!-- column 1 -->
-											<table align='left' class='column'>
+												<!-- column 1 -->
+												<table align='left' class='column'>
 
-											</table><!-- /column 1 -->	
+												</table><!-- /column 1 -->	
 
-											<!-- column 2 -->
-											<table align='left' class='column'>
-												<tr>
+												<!-- column 2 -->
+												<table align='left' class='column'>
+													<tr>
 
-												</tr>
-											</table><!-- /column 2 -->
+													</tr>
+												</table><!-- /column 2 -->
 
-											<span class='clear'></span>	
+												<span class='clear'></span>	
 
-										</td>
-									</tr>
-								</table><!-- /social & contact -->
+											</td>
+										</tr>
+									</table><!-- /social & contact -->
 
-							</td>
-						</tr>
-					</table>
-				</div><!-- /content -->
+								</td>
+							</tr>
+						</table>
+					</div><!-- /content -->
 
-			</td>
-			<td></td>
-		</tr>
-	</table><!-- /BODY -->";	
+				</td>
+				<td></td>
+			</tr>
+		</table><!-- /BODY -->";	
 
-	$handler = "/print_docs/excel/excel_files/" . $excel_data['file_name'] . ".xls";
-	$subject = "System Usage as at ".$time;
+		$handler = "./print_docs/excel/excel_files/" . $excel_data['file_name'] . ".xls";
+		$subject = "System Usage as at ".$time;
 
-	$email_address = "smutheu@clintonhealthaccess.org,karsanrichard@gmail.com,ttunduny@gmail.com,teddyodera@gmail.com";
-						// $email_address = "karsanrichard@gmail.com,ttunduny@gmail.com,lesaneric@gmail.com";
-                        // $email_address = "ttunduny@gmail.com";
-                        //$bcc = "";
-	$this -> hcmp_functions -> send_email($email_address, $message, $subject, $handler);
-
-	redirect('sms/new_weekly_usage');
-
-
-
-							/*echo "<table class='data-table'>
-		<thead>
-		<tr>
-			<th ><b>Facility Name</b></th>
-			<th ><b>Facility Code</b></th>
-			<th ><b>County</b></th>
-			<th ><b>Sub-County</b></th>
-			<th ><b>Date Last Issued</b></th>
-			<th ><b>Days from last issue</b></th>
-			<th ><b>Date Last Redistributed</b></th>
-			<th ><b>Days From last Redistributed</b></th>
-			<th ><b>Date Last ordered</b></th>
-			<th ><b>Days From Last order</b></th>
-			<th ><b>Date Last Decommissioned</b></th>
-			<th ><b>Days From Last Decommissioned</b></th>
-			<th ><b>Date Last Seen</b></th>
-			<th ><b>Days From Last Seen</b></th>
-		</tr> 
-		</thead><tbody>";
-       foreach ($finalArray as $key => $value) {
-       	
-           echo '<tr><td>'.$value['facility_name'].'</td>';
-		   echo '<td>'.$value['facility_code'].'</td>';
-		   echo '<td>'.$value['county'].'</td>';
-		   echo '<td>'.$value['district'].'</td>';
-		   echo '<td>'.date('Y-m-d',strtotime($value['issue_event'])).'</td>';
-		   echo '<td>'.$value['issue_d'].'</td>';
-		   echo '<td>'.$value['redistribute_event'].'</td>';
-		   echo '<td>'.$value['redistribute_d'].'</td>';
-		   echo '<td>'.$value['ordered_event'].'</td>';
-		   echo '<td>'.$value['ordered_d'].'</td>';
-		   echo '<td>'.$value['decommissioned_event'].'</td>';
-		   echo '<td>'.$value['decommissioned_d'].'</td>';
-		   echo '<td>'.$value['date_event'].'</td>';
-		   echo '<td>'.$value['date_event_d'].'</td></tr>';
-       }
-       echo '</tbody></table>';*/
+		$email_address = "smutheu@clintonhealthaccess.org,karsanrichard@gmail.com,ttunduny@gmail.com,teddyodera@gmail.com";
+		// $email_address = "karsanrichard@gmail.com";
+							// $email_address = "karsanrichard@gmail.com,ttunduny@gmail.com";
+	                        // $email_address = "ttunduny@gmail.com";
+	                        //$bcc = "";
+		$status = $this -> hcmp_functions -> send_email($email_address, $message, $subject, $handler);
+		// echo "I work till here";exit;
+		// echo "<pre>";print_r($status);exit;
+		redirect('sms/new_weekly_usage');
    }
 
+
+   public function send_system_usage_specific($county_id = NULL,$district_id = NULL,$facility_code = NULL,$listing_email_address = NULL){//Karsan
+		$time=date('M , d Y');
+		$county_name = counties::get_county_name($county_id);
+		$district_name = districts::get_district_name_($district_id);
+
+		$cp_email_query = "SELECT * FROM email_listing_new WHERE county = $county_id AND usertype = 10";
+		$cp_emails = $this->db->query($cp_email_query)->result_array();
+
+		$scp_email_query = "SELECT * FROM email_listing_new WHERE county = $county_id AND usertype = 3";
+		$scp_emails = $this->db->query($scp_email_query)->result_array();
+
+		// echo "<pre>";print_r($cp_emails);exit;
+
+		//CP
+		$cp_emails_str = '';
+		foreach ($cp_emails as $emails => $value) {
+			$cp_emails_str = $cp_emails_str.','.$value['email'];
+			// echo "<pre>";print_r($value['email']);exit;
+		}
+		$cp_emails_str = ltrim($cp_emails_str,',');
+
+		//SCP
+		$scp_emails_str = '';
+		foreach ($scp_emails as $emails => $value) {
+			$scp_emails_str = $scp_emails_str.','.$value['email'];
+			// echo "<pre>";print_r($value['email']);exit;
+		}
+		$scp_emails_str = ltrim($scp_emails_str,',');
+
+		// echo $scp_emails_str;exit;
+
+		// echo "<pre>";print_r($scp_emails);exit;
+
+		// echo "<pre>";print_r($district_name);
+		// echo "<pre>OVER ";
+
+		$appended = !empty($district_name)? $district_name['district']." Subcounty" :$county_name['county']." County";
+		$excel_title = 'HCMP facility activity log summary for '.$appended;
+		$email_subject = 'HCMP System usage report for '.$appended.' as at '.$time;
+		// echo $county_name.' '.$district_name;
+		// echo $excel_title;exit;
+
+		$active_facilities = Facilities::getAll_($county_id,$district_id);
+		// echo "<pre>";print_r($active_facilities);echo "</pre>";exit;
+		$last_seen = Facilities::get_facility_data_specific(NULL,$county_id,$district_id,$facility_code,'all');
+		$last_issued = Facilities::get_facility_data_specific('last_issued',$county_id,$district_id,$facility_code,'all');
+		$last_ordered = Facilities::get_facility_data_specific('last_ordered',$county_id,$district_id,$facility_code,'all');
+		$decommissioned = Facilities::get_facility_data_specific('last_decommissioned',$county_id,$district_id,$facility_code,'all');
+		$redistributed = Facilities::get_facility_data_specific('last_redistributed',$county_id,$district_id,$facility_code,'all');
+		$added_stock = Facilities::get_facility_data_specific('last_added_stock',$county_id,$district_id,$facility_code,'all');
+		// $all_faciliteis = Facilities::getAll_();
+
+		// echo "<pre>";print_r($active_facilities);echo "</pre>";exit;
+		$facility_count = (empty($active_facilities))? NULL : count($active_facilities);
+
+		$final_array = array();
+		$last_seen_count = count($last_seen);
+		$last_issued_count = count($last_issued);
+		$last_ordered_count = count($last_ordered);
+		$decommissioned_count = count($decommissioned);
+		$redistributed_count = count($redistributed);
+		$added_stock_count = count($added_stock);
+
+
+
+
+		foreach ($active_facilities as $a_c) { 
+			$final_array[] = array(
+				'Facility Name' => $a_c['facility_name'], 
+				'Facility Code' => $a_c['facility_code'],
+				'County' => $a_c['county'],
+				'Sub-County' => $a_c['subcounty']
+				);
+		}//active_facilities foreach
+
+		
+		$final_array_count = count($final_array);
+
+
+		$last_seen_time = NULL;
+		$last_issued_time = NULL;
+		$last_order_time = NULL;
+		$last_deccommissioned_time = NULL;
+		$last_redistributed_time = NULL;
+		$last_added_stock_time = NULL;
+
+		foreach ($final_array as $keyy => $value) {
+			foreach ($last_seen as $key => $value) {
+				if ($final_array[$keyy]['Facility Code'] == $last_seen[$key]['facility_code']){
+						// echo "<pre>".$last_ordered[$j]['last_seen']."	".$last_ordered[$j]['facility_code'];
+					if ($last_seen[$key]['last_seen'] > $last_seen_time) {
+						$last_seen_time = $last_seen[$key]['last_seen'];
+						$days_last_seen = $last_seen[$key]['difference_in_days'];
+							// echo "<pre>".$last_seen_time;
+					}
+					$final_array[$keyy]['Date Last Seen'] = $last_seen_time;
+					$final_array[$keyy]['Days From Last Seen'] = $days_last_seen;
+							// echo "<pre>".$last_seen_time;
+			        	// $final_array[$i]['Days From Last Seen'] = abs($last_seen_time - $now);
+					$last_seen_time = NULL;
+			        }//end of facility code if
+
+			}//end of last seen foreach
+		}
+
+		// echo "<pre>";print_r($final_array);echo "</pre>";exit;
+
+		//last issued time
+		foreach ($final_array as $keyy => $value) {
+			foreach ($last_issued as $key => $value) {
+				if ($final_array[$keyy]['Facility Code'] == $last_issued[$key]['facility_code']){
+						// echo "<pre>".$last_ordered[$j]['last_seen']."	".$last_ordered[$j]['facility_code'];
+					if ($last_issued[$key]['last_seen'] > $last_issued_time) {
+						$last_issued_time = $last_issued[$key]['last_seen'];
+						$days = $last_issued[$key]['difference_in_days'];
+							// echo "<pre>".$last_order_time;
+					}
+					$final_array[$keyy]['Date Last Issued'] = $last_issued_time;
+					$final_array[$keyy]['Days From Last Issue'] = $days;
+			        	// $final_array[$i]['Days From Last Seen'] = abs($last_seen_time - $now);
+					$last_issued_time = NULL;
+			        }//end of facility code if
+
+			}//end of last seen foreach
+		}
+		
+
+		//last ordered
+		foreach ($final_array as $keyy => $value) {
+			foreach ($last_ordered as $key => $value) {
+				if ($final_array[$keyy]['Facility Code'] == $last_ordered[$key]['facility_code']){
+						// echo "<pre>".$last_ordered[$j]['last_seen']."	".$last_ordered[$j]['facility_code'];
+					if ($last_ordered[$key]['last_seen'] > $last_order_time) {
+						$last_order_time = $last_ordered[$key]['last_seen'];
+						$days_last_ordered = $last_ordered[$key]['difference_in_days'];
+							// echo "<pre>".$last_order_time;
+					}
+					$final_array[$keyy]['Date Last Ordered'] = $last_order_time;
+					$final_array[$keyy]['Days From Last Order'] = $days_last_ordered;
+			        	// $final_array[$i]['Days From Last Seen'] = abs($last_seen_time - $now);
+					$last_order_time = NULL;
+			        }//end of facility code if
+
+			}//end of last seen foreach
+		}
+
+		foreach ($final_array as $keyy => $value) {
+			foreach ($decommissioned as $key => $value) {
+				if ($final_array[$keyy]['Facility Code'] == $decommissioned[$key]['facility_code']){
+						// echo "<pre>".$last_ordered[$j]['last_seen']."	".$last_ordered[$j]['facility_code'];
+					if ($decommissioned[$key]['last_seen'] > $last_deccommissioned_time) {
+						$last_deccommissioned_time = $decommissioned[$key]['last_seen'];
+						$days_last_decommissioned = $decommissioned[$key]['difference_in_days'];
+							// echo "<pre>".$last_order_time;
+					}
+					$final_array[$keyy]['Date Last Decommissioned'] = $last_deccommissioned_time;
+					$final_array[$keyy]['Days From Last Decommissioned'] = $days_last_decommissioned;
+			        	// $final_array[$i]['Days From Last Seen'] = abs($last_seen_time - $now);
+					$last_deccommissioned_time = NULL;
+			        }//end of facility code if
+
+			}//end of last seen foreach
+		}
+
+		
+		foreach ($final_array as $keyy => $value) {
+			foreach ($redistributed as $key => $value) {
+				if ($final_array[$keyy]['Facility Code'] == $redistributed[$key]['facility_code']){
+						// echo "<pre>".$last_ordered[$j]['last_seen']."	".$last_ordered[$j]['facility_code'];
+					if ($redistributed[$key]['last_seen'] > $last_redistributed_time) {
+						$last_redistributed_time = $redistributed[$key]['last_seen'];
+						$days_last_redistributed = $redistributed[$key]['difference_in_days'];
+							// echo "<pre>".$last_order_time;
+					}
+					$final_array[$keyy]['Date Last Redistributed'] = $last_redistributed_time;
+					$final_array[$keyy]['Days From Last Redistributed'] = $days_last_redistributed;
+			        	// $final_array[$i]['Days From Last Seen'] = abs($last_seen_time - $now);
+					$last_redistributed_time = NULL;
+			        }//end of facility code if
+
+			}//end of last seen foreach
+		}
+
+		foreach ($final_array as $keyy => $value) {
+			foreach ($added_stock as $key => $value) {
+				if ($final_array[$keyy]['Facility Code'] == $added_stock[$key]['facility_code']){
+						// echo "<pre>".$last_ordered[$j]['last_seen']."	".$last_ordered[$j]['facility_code'];
+					if ($added_stock[$key]['last_seen'] > $last_added_stock_time) {
+						$last_added_stock_time = $added_stock[$key]['last_seen'];
+						$days_last_added_stock = $added_stock[$key]['difference_in_days'];
+							// echo "<pre>".$last_order_time;
+					}
+					$final_array[$keyy]['Date Last Received Order'] = $last_added_stock_time;
+					$final_array[$keyy]['Days From Last Received Order'] = $days_last_added_stock;
+			        	// $final_array[$i]['Days From Last Seen'] = abs($last_seen_time - $now);
+					$last_added_stock_time = NULL;
+			        }//end of facility code if
+
+			}//end of last seen foreach
+		}
+		
+		// echo "<pre>";print_r($final_array);exit;
+
+		$row_data = array();
+		$counterrrr = 0;
+		foreach ($final_array as $facility) :
+			// echo "<pre>". $counterrrr . "</pre>";
+		// $counterrrr = $counterrrr + 1;
+			//random code to allow for commit
+			$issue_date = (isset($facility['Date Last Issued'])) ? date('Y-m-d', strtotime($facility['Date Last Issued'])) : "No Data Available";
+		$last_seen = (isset($facility['Date Last Seen'])) ? date('Y-m-d', strtotime($facility['Date Last Seen'])) : "No Data Available";
+		$redistribution = (isset($facility['Date Last Redistributed'])) ? date('Y-m-d', strtotime($facility['Date Last Redistributed'])) : "No Data Available";
+		$order_date = (isset($facility['Date Last Ordered'])) ? date('Y-m-d', strtotime($facility['Date Last Ordered'])) : "No Data Available";
+		$decommission_date = (isset($facility['Date Last Decommissioned'])) ? date('Y-m-d', strtotime($facility['Date Last Decommissioned'])) : "No Data Available";
+		$date_order = (isset($facility['Date Last Received Order'])) ? date('Y-m-d', strtotime($facility['Date Last Received Order'])) : "No Data Available";
+
+		$days_from_last_seen = isset($facility['Days From Last Seen'])?$facility['Days From Last Seen']:'    -    ';
+		$days_from_last_issued = isset($facility['Days From Last Issue'])?$facility['Days From Last Issue']:'  -    ';
+		$days_from_last_redist = isset($facility['Days From Last Redistributed'])?$facility['Days From Last Redistributed']:'    -    ';
+		$days_from_last_ordered = isset($facility['Days From Last Order'])?$facility['Days From Last Order']:'    -  ';
+		$decomissioned_days = isset($facility['Days From Last Decommissioned'])?$facility['Days From Last Decommissioned']:'    -    ';
+		$days_from_last_recieved = isset($facility['Days From Last Received Order'])?$facility['Days From Last Received Order']:'    -    ';
+
+		array_push($row_data, array($facility['Facility Name'], 
+			$facility['Facility Code'], 
+			$facility['Sub-County'],
+			$facility['County'], 
+			$last_seen, 
+			$days_from_last_seen, 
+			$issue_date, 
+			$days_from_last_issued, 
+			$redistribution, 
+			$days_from_last_redist, 
+			$order_date, 
+			$days_from_last_ordered, 
+			$decommission_date, 
+			$decomissioned_days, 
+			$date_order, 
+			$days_from_last_recieved));
+
+
+		endforeach;
+
+		$excel_data = array();
+			// $excel_data = array('doc_creator' => 'HCMP ', 'doc_title' => 'System Usage Breakdown ', 'file_name' => 'system usage breakdown');
+		$excel_data = array('doc_creator' => 'HCMP-Kenya', 'doc_title' => $excel_title, 'file_name' => 'HCMP_Facility_Activity_Log_Summary_as_at_'.$time);
+		$column_data = array(
+			"Facility Name", 
+			"Facility Code", 
+			"Sub County", 
+			"County",  
+			"Date Last Logged In", 
+			"Days From Last Log In", 
+			"Date Last Issued", 
+			"Days From Last Issue", 
+			"Date Last Redistributed", 
+			"Days From Last Redistribution", 
+			"Date Last Ordered", 
+			"Days From Last Order", 
+			"Date Last Decommissioned", 
+			"Days From Last Decommission", 
+			"Date Last Received Order", 
+			"Days From Last Stock Addition");
+		$excel_data['column_data'] = $column_data;
+		$excel_data['row_data'] = $row_data;
+		$excel_data['report_type']='Log Summary';
+		// echo "<pre>";print_r($excel_data);echo "</pre>";exit;
+		$res = $this -> hcmp_functions -> create_excel($excel_data);
+
+		// echo 'This '.$res;exit;
+		
+		$message ='';	
+		$message.="<style> table {
+			border-collapse: collapse; 
+		}td,th{
+			padding: 12px;
+			text-align:center;
+		}
+
+		*{margin:0;padding:0}*{font-family:'Helvetica Neue',Helvetica,Helvetica,Arial,sans-serif}img{max-width:100%}.collapse{padding:0}body{-webkit-font-smoothing:antialiased;-webkit-text-size-adjust:none;width:100%!important;height:100%}a{color:#2BA6CB}.btn{text-decoration:none;color:#FFF;background-color:#666;padding:10px 16px;font-weight:700;margin-right:10px;text-align:center;cursor:pointer;display:inline-block}p.callout{padding:15px;background-color:#ECF8FF;margin-bottom:15px}.callout a{font-weight:700;color:#2BA6CB}table.social{background-color:#ebebeb}.social .soc-btn{padding:3px 7px;font-size:12px;margin-bottom:10px;text-decoration:none;color:#FFF;font-weight:700;display:block;text-align:center}a.fb{background-color:#3B5998!important}a.tw{background-color:#1daced!important}a.gp{background-color:#DB4A39!important}a.ms{background-color:#000!important}.sidebar .soc-btn{display:block;width:100%}table.head-wrap{width:100%}.header.container table td.logo{padding:15px}.header.container table td.label{padding:15px 15px 15px 0}table.body-wrap{width:100%}table.footer-wrap{width:100%;clear:both!important}.footer-wrap .container td.content p{border-top:1px solid #d7d7d7;padding-top:15px;font-size:9px;font-weight:500}h1,h2,h3,h4,h5,h6{font-family:HelveticaNeue-Light,'Helvetica Neue Light','Helvetica Neue',Helvetica,Arial,'Lucida Grande',sans-serif;line-height:1.1;margin-bottom:15px;color:#000}h1 small,h2 small,h3 small,h4 small,h5 small,h6 small{font-size:60%;color:#6f6f6f;line-height:0;text-transform:none}h1{font-weight:200;font-size:44px}h2{font-weight:200;font-size:37px}h3{font-weight:500;font-size:27px}h4{font-weight:500;font-size:23px}h5{font-weight:900;font-size:17px}h6{font-weight:900;font-size:14px;text-transform:uppercase;color:#444}.collapse{margin:0!important}p,ul{margin-bottom:10px;font-weight:400;font-size:14px;line-height:1.6}p.lead{font-size:17px}p.last{margin-bottom:0}ul li{margin-left:5px;list-style-position:inside}ul.sidebar{background:#ebebeb;display:block;list-style-type:none}ul.sidebar li{display:block;margin:0}ul.sidebar li a{text-decoration:none;color:#666;padding:10px 16px;cursor:pointer;border-bottom:1px solid #777;border-top:1px solid #FFF;display:block;margin:0}ul.sidebar li a.last{border-bottom-width:0}ul.sidebar li a h1,ul.sidebar li a h2,ul.sidebar li a h3,ul.sidebar li a h4,ul.sidebar li a h5,ul.sidebar li a h6,ul.sidebar li a p{margin-bottom:0!important}.container{display:block!important;max-width:100%!important;margin:0 auto!important;clear:both!important}.content{padding:15px;max-width:80%px;margin:0 auto;display:block}.content table{width:100%}.column{width:300px;float:left}.column tr td{padding:15px}.column-wrap{padding:0!important;margin:0 auto;max-width:600px!important}.column table{width:100%}.social .column{width:280px;min-width:279px;float:left}.clear{display:block;clear:both}@media only screen and (max-width:600px){a[class=btn]{display:block!important;margin-bottom:10px!important;background-image:none!important;margin-right:0!important}div[class=column]{width:auto!important;float:none!important}table.social div[class=column]{width:auto!important}}</style>";
+		$message .='
+		<tr>
+			<td colspan="12">
+			</tr>
+		</tbody>
+		</table>'; 
+		$message.="<!-- BODY -->
+		<table class='body-wrap'>
+			<tr>
+				<td></td>
+				<td class='container' bgcolor='#FFFFFF'>
+
+					<div class='content'>
+						<table>
+							<tr>
+								<td>
+
+									<p class='lead'>Find attached a summary of Facility Activity Log, as at $time</p>
+
+									<table class='social' width='100%'>
+										<tr>
+											<td>
+
+												<!-- column 1 -->
+												<table align='left' class='column'>
+
+												</table><!-- /column 1 -->	
+
+												<!-- column 2 -->
+												<table align='left' class='column'>
+													<tr>
+
+													</tr>
+												</table><!-- /column 2 -->
+
+												<span class='clear'></span>	
+
+											</td>
+										</tr>
+									</table><!-- /social & contact -->
+
+								</td>
+							</tr>
+						</table>
+					</div><!-- /content -->
+
+				</td>
+				<td></td>
+			</tr>
+		</table><!-- /BODY -->";	
+
+		$handler = "./print_docs/excel/excel_files/" . $excel_data['file_name'] . ".xls";
+		// $subject = $excel_title." as at ".$time;
+
+		// $email_address = "smutheu@clintonhealthaccess.org,sethrichard40@gmail.com,ttunduny@gmail.com,teddyodera@gmail.com";
+		// $email_address = $listing_email_address;
+		$email_address = $cp_emails_str;
+		$cc_email = $scp_emails_str;
+		$bcc_email = "smutheu@clintonhealthaccess.org,karsanrichard@gmail.com,ttunduny@gmail.com,teddyodera@gmail.com,ronohb@gmail.com,odiwuorybrian@gmail.com,mwakiojoy@gmail.com,kevgithuka@gmail.com,margie.odora@gmail.com,kiganyastephenthua@gmail.com";
+
+		// $email_address = "karsanrichard@gmail.com";
+		// $bcc_email = "";
+		// $cc_email = "";
+		// $email_address = "karsanrichard@gmail.com,ttunduny@gmail.com";
+        // $email_address = "ttunduny@gmail.com";
+        //$bcc = "";
+        if (!empty($facility_count) && $facility_count>0) {
+			$status = $this -> hcmp_functions -> send_email($email_address, $message, $email_subject, $handler,$bcc_email,$cc_email);
+        }
+		// echo "I work till here";exit;
+		// echo "<pre>";print_r($status);exit;
+		// redirect('sms/new_weekly_usage');
+   }
+
+   public function send_sytem_usage()
+   {
+   	$listing = $this->db->query("SELECT county FROM email_listing_new WHERE usertype = 10 GROUP BY county")->result_array();
+
+   	// echo "<pre>";print_r($listing);exit;
+   	foreach ($listing as $list => $value) {
+   		# code...
+		// echo "<pre>";print_r($value);
+		$county_id = $value['county'];
+		// $subcounty = $value['sub_county'];
+		// $email_address = $value['email'];
+
+		$send_it = $this-> send_system_usage_specific($county_id,NULL,NULL,$email_address);
+		// echo "done";exit;
+   	}
+
+   	// echo "Whole thing done";exit;
+   }//end of send system usage
+
    public function tester(){
+   	$data = $this->db->query("SELECT * FROM email_listing_new");
+		echo "<pre>";print_r($data);exit;
+
    	$var = $this->hcmp_functions->send_system_text("redistribute");
    	echo "<pre>";print_r($var);echo "</pre>";exit;
    }

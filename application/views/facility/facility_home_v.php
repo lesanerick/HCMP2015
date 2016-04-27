@@ -152,7 +152,7 @@
         </div>-->
         
  		<div style="height:auto; margin-bottom: 2px" class="distribute message ">
-        	<a href="<?php echo base_url('issues/confirm_external_issue')?>"><h5>Receive Commodity From Other Facility (Redistributions)</h5></a>
+        	<a href="<?php echo base_url('issues/confirm_external_issue_offline')?>"><h5>Receive Commodity From Other Facility (Redistributions)</h5></a>
         	 
         </div>
        <!-- <div style="height:auto; margin-bottom: 2px" class="distribute message ">
