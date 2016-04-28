@@ -718,6 +718,18 @@ class Facilities extends Doctrine_Record {
         // $data = Doctrine_Manager::getInstance()->getCurrentConnection()->fetchAll($sql);
 		// return $data;
 	}
+
+	public function get_facilities_never_logged_in_count(){
+
+
+		$data = Doctrine_Manager::getInstance()->getCurrentConnection()->fetchAll("SELECT facility_code
+				FROM facilities 
+				WHERE using_hcmp = 1 AND facility_code NOT IN (SELECT facility_code FROM log WHERE facility_code is not null)");
+
+        return count($data);
+
+	}
+
 	public function get_facilities_not_issued_in_month($start_date,$last_date,$county_id=null,$district_id=null){
 		$and_data = '';
 		if ($county_id!=null) {

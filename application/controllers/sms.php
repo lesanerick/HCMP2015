@@ -2670,7 +2670,11 @@ public function log_summary_weekly_view(){
 	public function log_summary_weekly($county_id = NULL,$district_id = NULL,$facility_code = NULL){//Karsan
 		$time=date('M , d Y');
 		$time_file= $time.'_'.date('h').'_'.date('i').'_'.date('s');
-		// echo "$time_file";die;
+		$start_date = '2012-01-01';
+		$current_date = date('Y').'-'.date('m').'-'.date('d');
+		$two_weeks_ago_date = date("Y-m-d", mktime(0, 0, 0, date("m"), date("d")-14, date("Y")));
+		$one_month_ago_date = date("Y-m-d", mktime(0, 0, 0, date("m")-1, date("d"), date("Y")));
+		$three_months_ago_date = date("Y-m-d", mktime(0, 0, 0, date("m")-3, date("d"), date("Y")));
 
 		$active_facilities = Facilities::getAll_($county_id,$district_id);
 		// echo "<pre>";print_r($active_facilities);echo "</pre>";exit;
@@ -2680,6 +2684,10 @@ public function log_summary_weekly_view(){
 		$decommissioned = Facilities::get_facility_data_specific('last_decommissioned',$county_id,$district_id,$facility_code,'all');
 		$redistributed = Facilities::get_facility_data_specific('last_redistributed',$county_id,$district_id,$facility_code,'all');
 		$added_stock = Facilities::get_facility_data_specific('last_added_stock',$county_id,$district_id,$facility_code,'all');
+		$never_issued = Facilities::get_facilities_not_in_month($start_date, $current_date, null, null, 'issued');
+		$two_weeks_not_logged = Facilities::get_facilities_not_in_month($two_weeks_ago_date, $current_date);
+		$one_month_not_logged = Facilities::get_facilities_not_in_month($one_month_ago_date, $current_date);
+		$three_months_not_logged = Facilities::get_facilities_not_in_month($three_months_ago_date, $current_date);
 		// $all_faciliteis = Facilities::getAll_();
 
 		// echo "<pre>";print_r($all_faciliteis);echo "</pre>";exit;
@@ -2690,9 +2698,12 @@ public function log_summary_weekly_view(){
 		$decommissioned_count = count($decommissioned);
 		$redistributed_count = count($redistributed);
 		$added_stock_count = count($added_stock);
-
-
-
+		$active_facilities_count = count($active_facilities);
+		$never_logged_in_count = Facilities::get_facilities_never_logged_in_count();
+		$never_issued_count = count($never_issued);
+		$two_weeks_not_logged_count = count($two_weeks_not_logged);
+		$one_month_not_logged_count = count($one_month_not_logged);
+		$three_months_not_logged_count = count($three_months_not_logged);
 
 		foreach ($active_facilities as $a_c) { 
 			$final_array[] = array(
@@ -2931,14 +2942,119 @@ public function log_summary_weekly_view(){
 
 												<!-- column 1 -->
 												<table align='left' class='column'>
-
+													<tr>
+														Number of Active HCMP Facilities 
+													</tr>
 												</table><!-- /column 1 -->	
 
 												<!-- column 2 -->
 												<table align='left' class='column'>
 													<tr>
-
+														- $active_facilities_count
 													</tr>
+												</table><!-- /column 2 -->
+
+												<span class='clear'></span>	
+
+											</td>
+										</tr>
+										<tr>
+											<td>
+
+												<!-- column 1 -->
+												<table align='left' class='column'>
+													<tr>
+														Number of Active HCMP Facilities that have never logged in
+													</tr>
+												</table><!-- /column 1 -->	
+
+												<!-- column 2 -->
+												<table align='left' class='column'>
+													<tr>
+														- $never_logged_in_count
+													</tr>
+												</table><!-- /column 2 -->
+
+												<span class='clear'></span>	
+
+											</td>
+										</tr>
+										<tr>
+											<td>
+
+												<!-- column 1 -->
+												<table align='left' class='column'>
+													<tr>
+														Number of HCMP Facilities that have never issued commodities
+													</tr>
+												</table><!-- /column 1 -->	
+
+												<!-- column 2 -->
+												<table align='left' class='column'>
+													<tr>
+														- $never_issued_count
+													</tr>
+												</table><!-- /column 2 -->
+
+												<span class='clear'></span>	
+
+											</td>
+										</tr>
+										<tr>
+											<td>
+
+												<!-- column 1 -->
+												<table align='left' class='column'>
+													<tr>
+														Number of HCMP Facilities that have not logged in in the last 2 weeks
+													</tr>
+												</table><!-- /column 1 -->	
+
+												<!-- column 2 -->
+												<table align='left' class='column'>
+													<tr>
+														- $two_weeks_not_logged_count
+													</tr>
+												</table><!-- /column 2 -->
+
+												<span class='clear'></span>	
+
+											</td>
+										</tr>
+										<tr>
+											<td>
+
+												<!-- column 1 -->
+												<table align='left' class='column'>
+													<tr>
+														Number of HCMP Facilities that have not logged in in the last 1 months
+													</tr>
+												</table><!-- /column 1 -->	
+													
+												<!-- column 2 -->
+												<table align='left' class='column'>
+													<tr>
+														- $one_month_not_logged_count
+													</tr>
+												</table><!-- /column 2 -->
+
+												<span class='clear'></span>	
+
+											</td>
+										</tr>
+										<tr>
+											<td>
+
+												<!-- column 1 -->
+												<table align='left' class='column'>
+													<tr>
+														Number of HCMP Facilities that have not logged in in the last 3 months
+													</tr>
+												</table><!-- /column 1 -->	
+
+												<!-- column 2 -->
+												<table align='left' class='column'>
+													 - $three_months_not_logged_count
 												</table><!-- /column 2 -->
 
 												<span class='clear'></span>	
@@ -2960,15 +3076,16 @@ public function log_summary_weekly_view(){
 		$handler = "./print_docs/excel/excel_files/" . $excel_data['file_name'] . ".xls";
 		$subject = "System Usage as at ".$time;
 
-		$email_address = "smutheu@clintonhealthaccess.org,karsanrichard@gmail.com,ttunduny@gmail.com,teddyodera@gmail.com";
+		$email_address = "lesaneric@gmail.com";
+		//$email_address = "smutheu@clintonhealthaccess.org,karsanrichard@gmail.com,ttunduny@gmail.com,teddyodera@gmail.com";
 		// $email_address = "karsanrichard@gmail.com";
 							// $email_address = "karsanrichard@gmail.com,ttunduny@gmail.com";
 	                        // $email_address = "ttunduny@gmail.com";
 	                        //$bcc = "";
-		$status = $this -> hcmp_functions -> send_email($email_address, $message, $subject, $handler);
+		$this -> hcmp_functions -> send_email($email_address, $message, $subject, $handler);
 		// echo "I work till here";exit;
 		// echo "<pre>";print_r($status);exit;
-		redirect('sms/new_weekly_usage');
+		// redirect('sms/new_weekly_usage');
    }
 
 
